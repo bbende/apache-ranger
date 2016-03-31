@@ -1,0 +1,131 @@
+{
+  "id":10,
+  "name":"nifi",
+  "implClass":"org.apache.ranger.services.nifi.RangerServiceNiFi",
+  "label":"NIFI",
+  "description":"NiFi",
+  "resources":[
+    {
+      "itemId":100,
+      "name":"nifi-resource",
+      "type":"string",
+      "level":10,
+      "parent":"",
+      "mandatory":true,
+      "lookupSupported":true,
+      "recursiveSupported":false,
+      "excludesSupported":true,
+      "matcher":"org.apache.ranger.plugin.resourcematcher.RangerDefaultResourceMatcher",
+      "matcherOptions":{
+        "wildCard":true,
+        "ignoreCase":true
+      },
+      "validationRegEx":"",
+      "validationMessage":"",
+      "uiHint":"",
+      "label":"NiFi Resource",
+      "description":"NiFi Resource"
+    }
+
+  ],
+  "accessTypes":[
+    {
+      "itemId":100,
+      "name":"read",
+      "label":"Read"
+    },
+    {
+      "itemId":200,
+      "name":"update",
+      "label":"Update"
+    }
+  ],
+  "configs":[
+    {
+      "itemId":400,
+      "name":"nifi.url",
+      "type":"string",
+      "mandatory":true,
+      "defaultValue":"",
+      "validationRegEx":"",
+      "validationMessage":"",
+      "uiHint":"",
+      "label":"NiFi URL"
+    },
+    {
+      "itemId":500,
+      "name":"nifi.ssl.keystore",
+      "type":"string",
+      "mandatory":false,
+      "defaultValue":"",
+      "validationRegEx":"",
+      "validationMessage":"",
+      "uiHint":"",
+      "label":"Keystore"
+    },
+    {
+      "itemId":510,
+      "name":"nifi.ssl.keystoreType",
+      "type":"string",
+      "mandatory":false,
+      "defaultValue":"",
+      "validationRegEx":"",
+      "validationMessage":"",
+      "uiHint":"",
+      "label":"Keystore Type"
+    },
+    {
+      "itemId":520,
+      "name":"nifi.ssl.keystorePassword",
+      "type":"string",
+      "mandatory":false,
+      "defaultValue":"",
+      "validationRegEx":"",
+      "validationMessage":"",
+      "uiHint":"",
+      "label":"Keystore Password"
+    },
+    {
+      "itemId":530,
+      "name":"nifi.ssl.truststore",
+      "type":"string",
+      "mandatory":false,
+      "defaultValue":"",
+      "validationRegEx":"",
+      "validationMessage":"",
+      "uiHint":"",
+      "label":"Truststore"
+    },
+    {
+      "itemId":540,
+      "name":"nifi.ssl.truststoreType",
+      "type":"string",
+      "mandatory":false,
+      "defaultValue":"",
+      "validationRegEx":"",
+      "validationMessage":"",
+      "uiHint":"",
+      "label":"Truststore Type"
+    },
+    {
+      "itemId":550,
+      "name":"nifi.ssl.truststorePassword",
+      "type":"string",
+      "mandatory":false,
+      "defaultValue":"",
+      "validationRegEx":"",
+      "validationMessage":"",
+      "uiHint":"",
+      "label":"Truststore Password"
+    }
+  ],
+  "enums":[
+
+  ],
+  "contextEnrichers":[
+
+  ],
+  "policyConditions":[
+
+  ]
+}
