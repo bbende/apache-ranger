@@ -41,9 +41,9 @@ public class NiFiConnectionMgr {
             throw new Exception("Required properties are not set for " + serviceName + ". URL not provided.");
         }
 
-        if (!url.endsWith("/nifi-api")) {
-            throw new Exception("Url must end with /nifi-api");
-        }
+        //if (!url.endsWith("/nifi-api")) {
+        //    throw new Exception("Url must end with /nifi-api");
+        //}
 
         // TODO create an SSLContext if SSL properties populated
         return new NiFiClient(url.trim(), null);
