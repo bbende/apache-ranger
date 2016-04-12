@@ -23,7 +23,7 @@
       "validationRegEx":"",
       "validationMessage":"",
       "uiHint":"",
-      "label":"NiFi Resource",
+      "label":"NiFi Resource Identifier",
       "description":"NiFi Resource"
     }
 
@@ -31,13 +31,13 @@
   "accessTypes":[
     {
       "itemId":100,
-      "name":"read",
+      "name":"READ",
       "label":"Read"
     },
     {
       "itemId":200,
-      "name":"update",
-      "label":"Update"
+      "name":"WRITE",
+      "label":"Write"
     }
   ],
   "configs":[
