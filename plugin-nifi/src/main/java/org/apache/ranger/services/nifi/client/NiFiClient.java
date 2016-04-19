@@ -105,6 +105,18 @@ public class NiFiClient {
         return responseData;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public SSLContext getSslContext() {
+        return sslContext;
+    }
+
+    public HostnameVerifier getHostnameVerifier() {
+        return hostnameVerifier;
+    }
+
     /**
      *
      * @param context

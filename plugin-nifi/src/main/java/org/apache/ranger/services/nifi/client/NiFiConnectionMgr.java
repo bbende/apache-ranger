@@ -18,12 +18,23 @@
  */
 package org.apache.ranger.services.nifi.client;
 
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class NiFiConnectionMgr {
-
-    static final String PROP_NIFI_URL = "nifi.url";
 
     /**
      *
@@ -35,18 +46,44 @@ public class NiFiConnectionMgr {
      * @throws Exception
      */
     static public NiFiClient getNiFiClient(String serviceName, Map<String, String> configs) throws Exception {
-        final String url = configs.get(PROP_NIFI_URL);
+        final String url = configs.get(NiFiConfigs.NIFI_URL);
+        validateNotBlank(url, "NiFi URL is required for " + serviceName);
 
-        if (url == null || url.trim().isEmpty()) {
-            throw new Exception("Required properties are not set for " + serviceName + ". URL not provided.");
+        final String authTypeStr = configs.get(NiFiConfigs.NIFI_AUTHENTICATION_TYPE);
+        validateNotBlank(authTypeStr, "Authentication Type is required for " + serviceName);
+
+        final NiFiAuthType authType = NiFiAuthType.valueOf(authTypeStr);
+
+        SSLContext sslContext = null;
+
+        if (authType == NiFiAuthType.SSL) {
+            final String keystore = configs.get(NiFiConfigs.NIFI_SSL_KEYSTORE);
+            final String keystoreType = configs.get(NiFiConfigs.NIFI_SSL_KEYSTORE_TYPE);
+            final String keystorePassword = configs.get(NiFiConfigs.NIFI_SSL_KEYSTORE_PASSWORD);
+
+            validateNotBlank(keystore, "Keystore is required for " + serviceName + " with Authentication Type of SSL");
+            validateNotBlank(keystoreType, "Keystore Type is required for " + serviceName + " with Authentication Type of SSL");
+            validateNotBlank(keystorePassword, "Keystore Password is required for " + serviceName + " with Authentication Type of SSL");
+
+            final String truststore = configs.get(NiFiConfigs.NIFI_SSL_TRUSTSTORE);
+            final String truststoreType = configs.get(NiFiConfigs.NIFI_SSL_TRUSTSTORE_TYPE);
+            final String truststorePassword = configs.get(NiFiConfigs.NIFI_SSL_TRUSTSTORE_PASSWORD);
+
+            validateNotBlank(truststore, "Truststore is required for " + serviceName + " with Authentication Type of SSL");
+            validateNotBlank(truststoreType, "Truststore Type is required for " + serviceName + " with Authentication Type of SSL");
+            validateNotBlank(truststorePassword, "Truststore Password is required for " + serviceName + " with Authentication Type of SSL");
+
+            sslContext = createSslContext(
+                    keystore.trim(),
+                    keystorePassword.trim().toCharArray(),
+                    keystoreType.trim(),
+                    truststore.trim(),
+                    truststorePassword.trim().toCharArray(),
+                    truststoreType.trim(),
+                    "TLS");
         }
 
-        //if (!url.endsWith("/nifi-api")) {
-        //    throw new Exception("Url must end with /nifi-api");
-        //}
-
-        // TODO create an SSLContext if SSL properties populated
-        return new NiFiClient(url.trim(), null);
+        return new NiFiClient(url.trim(), sslContext);
     }
 
     /**
@@ -61,6 +98,41 @@ public class NiFiConnectionMgr {
     public static HashMap<String, Object> connectionTest(String serviceName, Map<String, String> configs) throws Exception {
         NiFiClient client = getNiFiClient(serviceName, configs);
         return client.connectionTest();
+    }
+
+    private static void validateNotBlank(final String input, final String message) {
+        if (input == null || input.trim().isEmpty()) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+    private static SSLContext createSslContext(
+            final String keystore, final char[] keystorePasswd, final String keystoreType,
+            final String truststore, final char[] truststorePasswd, final String truststoreType,
+            final String protocol)
+            throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException,
+            UnrecoverableKeyException, KeyManagementException {
+
+        // prepare the keystore
+        final KeyStore keyStore = KeyStore.getInstance(keystoreType);
+        try (final InputStream keyStoreStream = new FileInputStream(keystore)) {
+            keyStore.load(keyStoreStream, keystorePasswd);
+        }
+        final KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        keyManagerFactory.init(keyStore, keystorePasswd);
+
+        // prepare the truststore
+        final KeyStore trustStore = KeyStore.getInstance(truststoreType);
+        try (final InputStream trustStoreStream = new FileInputStream(truststore)) {
+            trustStore.load(trustStoreStream, truststorePasswd);
+        }
+        final TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        trustManagerFactory.init(trustStore);
+
+        // initialize the ssl context
+        final SSLContext sslContext = SSLContext.getInstance(protocol);
+        sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());
+        return sslContext;
     }
 
 }

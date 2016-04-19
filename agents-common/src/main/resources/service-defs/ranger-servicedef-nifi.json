@@ -53,6 +53,18 @@
       "label":"NiFi URL"
     },
     {
+      "itemId": 410,
+      "name": "nifi.authentication",
+      "type": "enum",
+      "subType": "authType",
+      "mandatory": true,
+      "validationRegEx":"",
+      "validationMessage": "",
+      "uiHint":"",
+      "label": "Authentication Type",
+      "defaultValue": "NONE"
+    },
+    {
       "itemId":500,
       "name":"nifi.ssl.keystore",
       "type":"string",
@@ -77,7 +89,7 @@
     {
       "itemId":520,
       "name":"nifi.ssl.keystorePassword",
-      "type":"string",
+      "type":"password",
       "mandatory":false,
       "defaultValue":"",
       "validationRegEx":"",
@@ -110,17 +122,90 @@
     {
       "itemId":550,
       "name":"nifi.ssl.truststorePassword",
-      "type":"string",
+      "type":"password",
       "mandatory":false,
       "defaultValue":"",
       "validationRegEx":"",
       "validationMessage":"",
       "uiHint":"",
       "label":"Truststore Password"
+    },
+    {
+      "itemId":600,
+      "name":"nifi.ldap.username",
+      "type":"string",
+      "mandatory":false,
+      "defaultValue":"",
+      "validationRegEx":"",
+      "validationMessage":"",
+      "uiHint":"",
+      "label":"LDAP Username"
+    },
+    {
+      "itemId":610,
+      "name":"nifi.ldap.password",
+      "type":"password",
+      "mandatory":false,
+      "defaultValue":"",
+      "validationRegEx":"",
+      "validationMessage":"",
+      "uiHint":"",
+      "label":"LDAP Username"
+    },
+    {
+      "itemId":700,
+      "name":"nifi.kerberos.principal",
+      "type":"string",
+      "mandatory":false,
+      "defaultValue":"",
+      "validationRegEx":"",
+      "validationMessage":"",
+      "uiHint":"",
+      "label":"Kerberos Principal"
+    },
+    {
+      "itemId":710,
+      "name":"nifi.kerberos.keytab",
+      "type":"string",
+      "mandatory":false,
+      "defaultValue":"",
+      "validationRegEx":"",
+      "validationMessage":"",
+      "uiHint":"Full path to a Kerberos Keytab file",
+      "label":"Kerberos Keytab"
     }
   ],
-  "enums":[
+  "enums":
+  [
+      {
+        "itemId": 1,
+        "name": "authType",
+        "elements":
+        [
+          {
+            "itemId": 1,
+            "name": "NONE",
+            "label": "None"
+          },
+          {
+            "itemId": 2,
+            "name": "SSL",
+            "label": "SSL"
+          },
+          {
+            "itemId": 3,
+            "name": "LDAP",
+            "label": "LDAP"
+          },
+          {
+            "itemId": 4,
+            "name": "KERBEROS",
+            "label": "Kerberos"
+          }
+        ],
 
+        "defaultIndex": 0
+      }
   ],
   "contextEnrichers":[
 

@@ -18,7 +18,6 @@
  */
 package org.apache.ranger.services.nifi;
 
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.ranger.plugin.service.RangerBaseService;
@@ -38,7 +37,7 @@ public class RangerServiceNiFi extends RangerBaseService {
 
     @Override
     public HashMap<String, Object> validateConfig() throws Exception {
-        HashMap<String, Object> ret = new HashMap<String, Object>();
+        HashMap<String, Object> ret = new HashMap<>();
         String serviceName = getServiceName();
 
         if (LOG.isDebugEnabled()) {
@@ -52,6 +51,8 @@ public class RangerServiceNiFi extends RangerBaseService {
                 LOG.error("<== RangerServiceNiFi.validateConfig Error:", e);
                 throw e;
             }
+        } else {
+            throw new IllegalStateException("No Configuration found");
         }
 
         if (LOG.isDebugEnabled()) {
