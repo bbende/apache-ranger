@@ -19,6 +19,7 @@
 package org.apache.ranger.services.nifi.client;
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
@@ -31,7 +32,6 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSession;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateParsingException;
@@ -78,9 +78,9 @@ public class NiFiClient {
 
             final Client client = Client.create(config);
             final WebResource resource = client.resource(url);
-            final Response response = resource.accept("application/json").get(Response.class);
+            final ClientResponse response = resource.accept("application/json").get(ClientResponse.class);
 
-            if (Response.Status.ACCEPTED.getStatusCode() == response.getStatus()) {
+            if (Response.Status.OK.getStatusCode() == response.getStatus()) {
                 connectivityStatus = true;
             } else {
                 connectivityStatus = false;
